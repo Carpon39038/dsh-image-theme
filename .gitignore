@@ -1,0 +1,8 @@
+node_modules/
+playground/node_modules/
+playground/dist/
+playground/public/qa/
+.eslintcache
+work/
+.DS_Store
+*.log

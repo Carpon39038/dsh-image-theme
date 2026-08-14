@@ -1,0 +1,4 @@
+# Add the image-driven theme plugin to the DSH web client roster.
+- insert:
+    - id: image-theme
+      name: '@cabeta/dsh-image-theme'

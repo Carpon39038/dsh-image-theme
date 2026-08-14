@@ -1,0 +1,8 @@
+The plugin architecture targets DeepSeek Harness, Copyright DeepSeek,
+licensed under the Apache License 2.0.
+
+The image-palette approach is informed by Warp's open-source theme creator:
+https://github.com/warpdotdev/warp
+
+The preview background in playground/public/demo-background.png was generated
+for this project and contains no Warp interface assets.
