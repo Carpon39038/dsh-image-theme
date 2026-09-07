@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { contrastRatio, ensureContrast, hexToRgb } from '../src/client/color.ts'
 import { extractPaletteFromPixels } from '../src/client/palette.ts'
-import { buildThemeTokens, createThemeRoles } from '../src/client/theme.ts'
+import { buildThemeTokens, createThemeRoleModes, createThemeRoles } from '../src/client/theme.ts'
 import { DEFAULT_CONFIG } from '../src/client/types.ts'
 
 function pixels(colors: readonly string[], repeats: number): Uint8ClampedArray {
@@ -37,7 +37,17 @@ describe('theme safety', () => {
 
   it('keeps the selected accent readable on the derived surface', () => {
     const roles = createThemeRoles(palette, 0)
-    expect(contrastRatio(hexToRgb(roles.accent), hexToRgb(roles.surface))).toBeGreaterThanOrEqual(3.2)
+    expect(contrastRatio(hexToRgb(roles.accent), hexToRgb(roles.surface))).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it('creates readable foreground and accent roles for both color schemes', () => {
+    const roles = createThemeRoleModes(palette, 0)
+    for (const scheme of ['light', 'dark'] as const) {
+      const surface = hexToRgb(roles[scheme].surface)
+      expect(contrastRatio(hexToRgb(roles[scheme].foreground), surface)).toBeGreaterThanOrEqual(7)
+      expect(contrastRatio(hexToRgb(roles[scheme].secondary), surface)).toBeGreaterThanOrEqual(4.5)
+      expect(contrastRatio(hexToRgb(roles[scheme].accent), surface)).toBeGreaterThanOrEqual(4.5)
+    }
   })
 
   it('publishes mandatory light and dark values for each DSH token', () => {
@@ -47,6 +57,15 @@ describe('theme safety', () => {
       expect(modes.light).toBeTruthy()
       expect(modes.dark).toBeTruthy()
     }
+  })
+
+  it('keeps host light and dark selectors readable after applying label overrides', () => {
+    const tokens = buildThemeTokens(palette, { ...DEFAULT_CONFIG })
+    const labels = tokens['--dsw-alias-label-primary']
+    expect(labels).toBeDefined()
+    expect(contrastRatio(hexToRgb(labels?.light ?? '#fff'), hexToRgb('#f5f6f7'))).toBeGreaterThanOrEqual(4.5)
+    expect(contrastRatio(hexToRgb(labels?.dark ?? '#000'), hexToRgb('#353638'))).toBeGreaterThanOrEqual(4.5)
+    expect(labels?.light).not.toBe(labels?.dark)
   })
 
   it('can repair low-contrast colors to WCAG AA', () => {

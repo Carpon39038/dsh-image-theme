@@ -1,5 +1,6 @@
-import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+import type { Context } from '@deepseek-ai/cordis'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
+import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type {} from '@deepseek-ai/dsh-client-ui-settings/client'
 import type {} from '@deepseek-ai/dsh-client-ui-theme/client'
 import { ImageThemeController } from './controller.ts'
@@ -16,7 +17,7 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 
 export const inject = ['slots', 'locale', 'theme']
 
-export function apply(ctx: ClientContext): void {
+export function apply(ctx: Context): void {
   const controller = new ImageThemeController(ctx.theme)
   const injected = (): ImageThemeSectionInjected => ({ controller })
 

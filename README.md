@@ -5,7 +5,7 @@ A Warp-inspired image theme plugin for the [DeepSeek Harness](https://github.com
 Upload or drag in a picture and the plugin will:
 
 1. extract five dominant colors in CIE Lab space;
-2. turn the darkest image color into translucent glass surfaces;
+2. derive translucent light and dark glass surfaces from the darkest image color;
 3. let you choose one extracted color as the DSH accent;
 4. correct text and accent contrast before applying theme tokens;
 5. use the original image as the full-window background.
@@ -30,7 +30,14 @@ The repository includes prebuilt `lib/` artifacts, so a DSH profile can install 
 dsh plugin --profile <profile-name> add github:Carpon39038/dsh-image-theme
 ```
 
-Restart or refresh the DSH web client, then open **Settings → Image theme**.
+Use DSH `0.1.2-rc.1` with this plugin version. To upgrade the CLI:
+
+```bash
+npm install --global @deepseek-ai/dsh@0.1.2-rc.1
+dsh --version
+```
+
+Restart or refresh the DSH web client, then open **Settings → Image theme**. Start the default Web profile with `dsh web`.
 
 To install a local checkout while developing:
 
@@ -40,7 +47,7 @@ pnpm build
 dsh plugin --profile <profile-name> add link:$PWD
 ```
 
-The included `.npmrc` disables automatic peer installation. This is intentional: DSH supplies the client runtime and UI services, while the current public RC packages still reference workspace-only transitive packages that are not published to npm.
+The included `.npmrc` disables automatic peer installation: DSH supplies Cordis, React, and the client UI services at runtime. Development dependencies pin the official DSH `0.1.2-rc.1` packages so TypeScript checks the actual published APIs.
 
 ## How it works
 
@@ -55,7 +62,7 @@ This follows the same broad model as Warp's open-source theme creator, which use
 The plugin keeps the image, the dark surface color, the foreground, and the accent as separate roles:
 
 ```text
-image → five-color palette → darkest color → near-black glass surfaces
+image → five-color palette → darkest color → light/dark glass surfaces
                            ↘ selected color → contrast-safe accent
 ```
 
@@ -70,7 +77,7 @@ It overrides DSH's public alias tokens, including:
 - `--dsw-alias-label-primary` / `--dsw-alias-label-secondary`
 - `--dsw-specific-sidebar-fill`
 
-Every override contains both `light` and `dark` values, as required by the DSH theme runtime.
+Every override contains separate `light` and `dark` values, as required by the DSH theme runtime. Light mode uses a pale surface and dark text; dark mode uses a dark surface and light text. System mode follows the active host palette.
 
 ### Background rendering
 
@@ -84,8 +91,9 @@ Requirements: Node.js 22+ and pnpm 10+.
 pnpm install
 pnpm typecheck
 pnpm test
-pnpm build
 ```
+
+`pnpm test` rebuilds the distributable first, then runs palette tests and integration checks against the published DSH `ThemeRuntime`, `LocaleRuntime`, and `SlotRegistry`. The integration checks load the actual `lib/client.js` wrapper in a simulated DOM, restore an existing saved wallpaper, mount the settings component, and exercise locale changes, theme updates, disabling/re-enabling, settings-slot remounts, and plugin disposal. These checks do not start a Web server or replace a visual browser review.
 
 The interactive design preview is in `playground/`:
 
@@ -111,7 +119,9 @@ playground/                    runnable interactive visual preview
 
 ## Compatibility
 
-The initial version targets the DSH web plugin APIs inspected at `deepseek-harness` `0.1.0-rc.5`. DSH is still moving quickly; check the theme and settings-slot contracts when upgrading to a newer release.
+Plugin `0.1.1` targets DeepSeek Harness `0.1.2-rc.1` and Cordis `4.0.2`. Client contexts now come from `@deepseek-ai/cordis`, and the slots service comes from `@deepseek-ai/dsh-client-ui-renderer`; the removed `dsh-client-runtime` package is no longer requested. Only packages with a browser plugin entry appear in `dsh.client.inject`. DSH is still moving quickly; verify the published client APIs before upgrading further.
+
+Existing version-1 image settings and IndexedDB images are retained. The earlier light-mode contrast fix is included.
 
 The plugin is web-only. Images and preferences are local to each browser profile and are not synchronized between devices.
 

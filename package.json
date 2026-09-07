@@ -1,6 +1,6 @@
 {
   "name": "@cabeta/dsh-image-theme",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Warp-inspired image-to-theme plugin for the DeepSeek Harness web client.",
   "type": "module",
   "license": "MIT",
@@ -30,9 +30,8 @@
     },
     "client": {
       "inject": [
-        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-renderer",
         "@deepseek-ai/dsh-client-locale",
-        "@deepseek-ai/dsh-client-ui-slots",
         "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-ui-theme"
       ],
@@ -42,7 +41,7 @@
   "scripts": {
     "build": "tsdown -c tsdown.config.ts && tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run --config vitest.config.ts",
+    "test": "pnpm build && vitest run --config vitest.config.ts",
     "lint": "eslint src tests --cache --ext .ts,.tsx"
   },
   "keywords": [
@@ -60,27 +59,52 @@
     "node": ">=22"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-client-locale": "^0.0.1-rc.1",
-    "@deepseek-ai/dsh-client-runtime": "^0.0.1-rc.1",
-    "@deepseek-ai/dsh-client-ui-settings": "^0.0.1-rc.1",
-    "@deepseek-ai/dsh-client-ui-slots": "^0.0.1-rc.1",
-    "@deepseek-ai/dsh-client-ui-theme": "^0.0.1-rc.1",
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@deepseek-ai/dsh-client-locale": "^0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-renderer": "^0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-settings": "^0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-slots": "^0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-theme": "^0.1.2-rc.1",
     "react": "^18.2.0"
   },
   "peerDependenciesMeta": {
-    "@deepseek-ai/cordis": { "optional": true },
-    "@deepseek-ai/dsh-client-locale": { "optional": true },
-    "@deepseek-ai/dsh-client-runtime": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-settings": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-slots": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-theme": { "optional": true },
-    "react": { "optional": true }
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-locale": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-renderer": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-settings": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-slots": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-theme": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.2",
+    "@deepseek-ai/dsh-client-locale": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-store": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-renderer": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-settings": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-theme": "0.1.2-rc.1",
     "@types/react": "~18.3.31",
     "eslint": "^9.34.0",
+    "fake-indexeddb": "6.2.4",
+    "happy-dom": "20.8.4",
     "react": "^18.2.0",
+    "react-dom": "18.3.1",
     "tsdown": "^0.22.14",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.40.0",
